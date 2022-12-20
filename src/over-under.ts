@@ -66,7 +66,6 @@ export function handleOverAndUnderGameCreated(
   );
   if (decodedData) {
     const data = decodedData.toTuple();
-    ouGame.predictPrice = data[0].toBigInt();
     ouGame.startGameTimestamp = data[3].toBigInt();
     ouGame.endGameTimestamp = data[4].toBigInt();
     ouGame.minBet = data[5].toBigInt();
@@ -77,6 +76,7 @@ export function handleOverAndUnderGameCreated(
     ouGame.isGameDraw = false;
     ouGame.stockId = event.params.stock;
     ouGame.stockSymbol = event.params.stockSymbol;
+    ouGame.predictPrice = data[0].toBigInt();
     ouGame.rewardsDistributed = false;
     ouGame.winners = [];
     ouGame.totalBetAmountPooled = BigInt.fromI32(0);
@@ -101,6 +101,10 @@ export function handleOverAndUnderBetPlaced(
   let ouBet = new OverAndUnderBet(betId);
   ouBet.gameId = event.params.gameId;
   ouBet.timestamp = event.block.timestamp;
+  if (ouGame) {
+    ouBet.startGameTimestamp = ouGame.startGameTimestamp;
+  }
+  ouBet.isDraw = false;
   ouBet.better = event.params.better;
   ouBet.index = event.params.index;
   ouBet.betAmount = event.params.betAmount;
@@ -116,21 +120,13 @@ export function handleOverAndUnderBetPlaced(
     ouGame.curUpdateMulAtAmountInWei = event.params.curUpdateMulAtAmountInWei;
     ouGame.totalNumberOfBets = ouGame.totalNumberOfBets.plus(BigInt.fromI32(1));
     if (event.params.predictPriceAsOver) {
-      // if(ouGame.individualBetsInOverUnder)
       let curBetsInOver = ouGame.individualBetsInOverUnder[0].plus(
         event.params.betAmount
       );
       let curBetsInUnder = ouGame.individualBetsInOverUnder[1];
       let curBets = [curBetsInOver, curBetsInUnder];
       ouGame.individualBetsInOverUnder = curBets;
-      // ouGame.individualBetsInOverUnder[0] = ouGame.individualBetsInOverUnder[0].plus(
-      //   event.params.betAmount
-      // );
     } else {
-      // if(ouGame.individualBetsInOverUnder)
-      // ouGame.individualBetsInOverUnder[1] = ouGame.individualBetsInOverUnder[1].plus(
-      //   event.params.betAmount
-      // );
       let curBetsInOver = ouGame.individualBetsInOverUnder[0];
       let curBetsInUnder = ouGame.individualBetsInOverUnder[1].plus(
         event.params.betAmount
@@ -201,6 +197,15 @@ export function handleOverAndUnderGameDrawRevertBets(
   if (ouGame) {
     ouGame.isGameDraw = true;
     ouGame.save();
+  }
+  let id =
+    event.params.gameId.toHexString() +
+    event.params.better.toHexString() +
+    event.params.index.toHexString();
+  let ouBet = OverAndUnderBet.load(id);
+  if (ouBet) {
+    ouBet.isDraw = true;
+    ouBet.save();
   }
 }
 

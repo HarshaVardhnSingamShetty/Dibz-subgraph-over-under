@@ -29,6 +29,8 @@ type OverAndUnderBet @entity {
   id: ID! #gameId+betterAddress+index
   gameId: BigInt!
   timestamp: BigInt!
+  startGameTimestamp: BigInt!
+  isDraw: Boolean!
   better: Bytes!
   index: BigInt!
   betAmount: BigInt!
