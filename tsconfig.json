@@ -1,12 +1,8 @@
 {
-  "extends": "@graphprotocol/graph-ts/types/tsconfig.base.json",
-  "moduleResolution": "node",
-  "include": [
-    "src"
-  ],
-  {
-    "compilerOptions": {
-      "target": "es6"
-    }
-  },
+  "extends": "./node_modules/@graphprotocol/graph-ts/tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "@graphprotocol/graph-ts"
+    ]
+  }
 }

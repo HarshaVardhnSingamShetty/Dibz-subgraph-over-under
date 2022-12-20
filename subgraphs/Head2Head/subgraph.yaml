@@ -1,0 +1,48 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: h2h
+    network: chapel
+    source:
+      address: "0x11f42204A0Fb92DDB2F4661504A0D6111A44dC5B"
+      abi: h2h
+      startBlock: 25216312
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Head2HeadGame
+      abis:
+        - name: h2h
+          file: ./abis/h2h.json
+      eventHandlers:
+        - event: Head2HeadBetPlaced(indexed uint256,address,uint256,bytes12,uint256,uint256,uint256)
+          handler: handleHead2HeadBetPlaced
+        - event: Head2HeadGameDrawRevertBets(indexed uint256,address,uint256,bytes12,uint256)
+          handler: handleHead2HeadGameDrawRevertBets
+        - event: Head2HeadGameCreated(indexed uint256,bytes12[2],string[2],uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleHead2HeadGameCreated
+        - event: Head2HeadGameWinAmountSent(indexed uint256,address,uint256,bytes12,uint256,uint256)
+          handler: handleHead2HeadGameWinAmountSent
+        - event: Head2HeadPricesUpdated(indexed uint256,bytes12[2],uint256[2],uint256[2])
+          handler: handleHead2HeadPricesUpdated
+        - event: Head2HeadWinningStockUpdated(indexed uint256,bytes12)
+          handler: handleHead2HeadWinningStockUpdated
+        - event: Head2HeadRewardsDistributed(indexed uint256)
+          handler: handleHead2HeadRewardsDistributed
+        - event: Head2HeadBetLost(uint256,address,uint256,bytes12)
+          handler: handleHead2HeadBetLost
+        - event: Head2HeadReceivedBNB(address,uint256)
+          handler: handleHead2HeadReceivedBNB
+        - event: Head2HeadFundsSentToTreasury(uint256)
+          handler: handleHead2HeadFundsSentToTreasury
+        - event: Head2HeadOddsUpdated(indexed uint256,uint256,uint256)
+          handler: handleHead2HeadOddsUpdated
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Unpaused(address)
+          handler: handleUnpaused
+      file: ./src/h-2-h.ts

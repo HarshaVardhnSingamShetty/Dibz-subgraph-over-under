@@ -1,5 +1,1 @@
-node_modules
-build
-generated
-helpers
-.DS*
+node_modules/

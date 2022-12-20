@@ -1,0 +1,47 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: OverUnder
+    network: chapel
+    source:
+      address: "0xE03cD52Bd3a3514d02BF472F7C3cCb19E9218BBe"
+      startBlock: 25586204
+      abi: OverUnder
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - OverAndUnderGame
+        - OverAndUnderBet
+        - OverAndUnderBetter
+        - TotalOverAndUnderDetail
+      abis:
+        - name: OverUnder
+          file: OverUnder/abis/OverUnder.json
+      eventHandlers:
+        - event: OverAndUnderBatchGameIds(uint256[])
+          handler: handleOverAndUnderBatchGameIds
+        - event: OverAndUnderBetLost(uint256,address,uint256,bool)
+          handler: handleOverAndUnderBetLost
+        - event: OverAndUnderBetPlaced(indexed uint256,address,uint256,bool,uint256,uint256,uint256)
+          handler: handleOverAndUnderBetPlaced
+        - event: OverAndUnderFundsSentToTreasury(uint256)
+          handler: handleOverAndUnderFundsSentToTreasury
+        - event: OverAndUnderGameCreated(indexed uint256,bytes12,string,bytes)
+          handler: handleOverAndUnderGameCreated
+        - event: OverAndUnderGameDrawRevertBets(indexed uint256,address,uint256,bool,uint256)
+          handler: handleOverAndUnderGameDrawRevertBets
+        - event: OverAndUnderGameWinAmountSent(indexed uint256,address,uint256,bool,uint256,uint256)
+          handler: handleOverAndUnderGameWinAmountSent
+        - event: OverAndUnderOddsUpdated(indexed uint256,uint256,uint256)
+          handler: handleOverAndUnderOddsUpdated
+        - event: OverAndUnderReceivedBNB(address,uint256)
+          handler: handleOverAndUnderReceivedBNB
+        - event: OverAndUnderResultsUpdated(uint256,uint256,bool,bool)
+          handler: handleOverAndUnderResultsUpdated
+        - event: OverAndUnderRewardsDistributed(indexed uint256)
+          handler: handleOverAndUnderRewardsDistributed
+      file: OverUnder/OverUnder.wasm
